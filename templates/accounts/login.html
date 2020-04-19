@@ -1,5 +1,5 @@
 {% extends 'accounts/base_accounts.html' %}
-
+{% load hosts %}
 {% block title %}Log in to Django Boards{% endblock %}
 
 {% block content %}
@@ -16,12 +16,12 @@
             </form>
         </div>
         <div class="card-footer text-muted text-center">
-            New to Django Boards? <a href="{% url 'signup' %}">Sign Up</a>
+            New to Django Boards? <a href="{% host_url 'signup' host 'account' %}">Sign Up</a>
         </div>
     </div>
         <div class="text-center py-2">
             <small>
-                <a href="{% url 'password_reset' %}" class="text-muted">Forgot your password?</a>
+                <a href="{% host_url 'password_reset' host 'account' %}" class="text-muted">Forgot your password?</a>
             </small>
         </div>
     </div>
