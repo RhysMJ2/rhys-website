@@ -8,13 +8,18 @@ from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import UpdateView
+from django_hosts import reverse
 
 from accounts.forms import SignUpForm
 
 
+def redirected(request):
+    return redirect(reverse('home', host='www'))
+
+
 def authenticated(request):
     if request.user.is_authenticated:
-        return redirect("home")
+        return redirect(reverse('home', host='www'))
     else:
         return None
 
@@ -29,7 +34,7 @@ def signup(request):
             if form.is_valid():
                 user = form.save()
                 auto_login(request, user)
-                return redirect("home")
+                return redirect(reverse('home', host='www'))
         else:
             form = SignUpForm()
         return render(request, 'accounts/signup.html', {'form': form})

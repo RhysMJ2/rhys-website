@@ -1,5 +1,5 @@
 {% extends 'accounts/base_accounts.html' %}
-
+{% load hosts %}
 {% block title %}Sign up to Django Boards{% endblock %}
 
 {% block content %}
@@ -15,7 +15,7 @@
                 </form>
             </div>
             <div class="card-footer text-muted text-center">
-                Already have an account? <a href="{% url 'login' %}">Login</a>
+                Already have an account? <a href="{% host_url 'login' host 'account' %}">Login</a>
             </div>
         </div>
     </div>

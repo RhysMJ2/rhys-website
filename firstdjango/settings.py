@@ -17,6 +17,8 @@ from decouple import config, Csv
 import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django_hosts import reverse
+
 DATABASES = dict()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -43,12 +45,14 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     'boards.templatetags.gravatar',
+    'django_hosts',
     'widget_tweaks',
     'accounts',
     'boards',
 ]
 
 MIDDLEWARE = [
+    'django_hosts.middleware.HostsRequestMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -56,9 +60,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_hosts.middleware.HostsResponseMiddleware',
 ]
 
 ROOT_URLCONF = 'firstdjango.urls'
+ROOT_HOSTCONF = 'firstdjango.hosts'
+PARENT_HOST = 'localhost:3000' if DEBUG else 'isfrom.cymru'
+SESSION_COOKIE_DOMAIN = ".localhost" if DEBUG else '.isfrom.cymru'
+DOMAIN_NAME = "isfrom.cymru"
+DEFAULT_HOST = 'www'
 
 TEMPLATES = [
     {
@@ -73,6 +83,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'builtins': ['django_hosts.templatetags.hosts_override']
         },
     },
 ]
@@ -127,10 +138,10 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-LOGOUT_REDIRECT_URL = 'home'
-LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'redirect'
+LOGIN_REDIRECT_URL = 'redirect'
 
-LOGIN_URL = 'login'
+LOGIN_URL = 'account.login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config("EMAIL_HOST")
