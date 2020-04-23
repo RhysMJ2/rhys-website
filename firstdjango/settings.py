@@ -47,6 +47,9 @@ INSTALLED_APPS = [
     'boards.templatetags.gravatar',
     'django_hosts',
     'widget_tweaks',
+    'rest_framework',
+
+    'myapi',
     'accounts',
     'boards',
 ]
@@ -90,11 +93,32 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'firstdjango.wsgi.application'
 
-# Database
-DATABASE_URL = config("DATABASE_URL")
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAdminUser',
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '20/day',
+        'user': '150/day'
+    }
+}
 
-DATABASES = {'default': dj_database_url.parse(DATABASE_URL)}
-# , 'django.contrib.gis.db.backends.postgis'
+# Database
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
+        }
+    }
+
+else:
+    DATABASE_URL = config("DATABASE_URL")
+    DATABASES = {'default': dj_database_url.parse(DATABASE_URL)}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
