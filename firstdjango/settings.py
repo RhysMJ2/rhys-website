@@ -66,7 +66,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'firstdjango.urls'
 ROOT_HOSTCONF = 'firstdjango.hosts'
 PARENT_HOST = 'localhost:3000' if DEBUG else 'isfrom.cymru'
-SESSION_COOKIE_DOMAIN = ".localhost" if DEBUG else '.isfrom.cymru'
+SESSION_COOKIE_DOMAIN = ".localhost:3000" if DEBUG else '.isfrom.cymru'
 DOMAIN_NAME = "isfrom.cymru"
 DEFAULT_HOST = 'www'
 
@@ -141,7 +141,7 @@ STATICFILES_DIRS = [
 LOGOUT_REDIRECT_URL = 'redirect'
 LOGIN_REDIRECT_URL = 'redirect'
 
-LOGIN_URL = 'account.login'
+LOGIN_URL = 'account.localhost:3000/login' if DEBUG else 'account.isfrom.cymru/login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config("EMAIL_HOST")
