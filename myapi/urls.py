@@ -8,7 +8,7 @@ router.register(r'heroes', views.HeroViewSet)
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', include((router.urls, 'api'), namespace='api')),
+    path('', views.TestAPI.as_view()),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('test/', views.RequestCount.as_view())
+    path('test/', include((router.urls, 'api'), namespace='api'))
 ]

@@ -12,11 +12,12 @@ class HeroViewSet(viewsets.ModelViewSet):
     serializer_class = HeroSerializer
 
 
-class RequestCount(APIView):
+class TestAPI(APIView):
     throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     def get(self, request, format=None):
         content = {
-            'status': 'request was permitted'
+            'status': 'api under construction',
+            'test': 'send request to /test for testing'
         }
         return Response(content)
