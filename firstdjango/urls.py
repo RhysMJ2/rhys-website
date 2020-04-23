@@ -20,6 +20,7 @@ from boards import views
 urlpatterns = [
     path('', views.BoardListView.as_view(), name='home'),
     path('admin/', admin.site.urls, name='admin'), # For the admin dashboard
+    path('accounts/login/', views.login, name='login'),
     path('boards/<int:pk>/', views.TopicListView.as_view(), name='board_topics'),
     path('boards/<int:pk>/new/', views.new_topic, name='new_topic'),
     path('boards/<int:pk>/topics/<int:topic_pk>/', views.PostListView.as_view(), name='topic_posts'),

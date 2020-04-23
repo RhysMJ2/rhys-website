@@ -11,7 +11,9 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import UpdateView, ListView
 from django.views.generic.base import View
+from django_hosts import reverse as reverse_host
 
+from firstdjango.settings import PARENT_HOST
 from .forms import NewTopicForm, PostForm
 from .models import Board, Topic, Post
 
@@ -20,6 +22,12 @@ class BoardListView(ListView):
     model = Board
     context_object_name = 'boards'
     template_name = 'boards/home.html'
+
+
+def login(request):
+    direct = request.GET.get('next', '')
+    domain = PARENT_HOST
+    return redirect(reverse_host('login', host='account')+"?next="+domain+direct)
 
 
 # FBV Pagination, (won't work with updated topics.html)
