@@ -17,7 +17,7 @@
 {% endblock %}
 
 {% block branding %}
-    <a class='navbar-brand ' rel="nofollow" href="{% url 'home' %}">
+    <a class='navbar-brand ' rel="nofollow" href="{% host_url 'home' host 'www' %}">
         Rhys Website - API
     </a>
 {% endblock %}
@@ -31,14 +31,14 @@
         </a>
         <ul class="dropdown-menu">
             <li>
-                <a href="{% url 'my_account' %}">Account</a>
+                <a href="{% host_url 'my_account' host 'account' %}">Account</a>
             </li>
             <li>
-                <a href="{% url 'password_change' %}">Change password</a>
+                <a href="{% host_url 'password_change' host 'account' %}">Change password</a>
             </li>
             <div class="dropdown-divider"></div>
             <li>
-                <a href="{% url 'rest_framework:logout' %}">Logout</a>
+                <a href="{% host_url 'rest_framework:logout' 'api' %}">Logout</a>
             </li>
         </ul>
         </li>
