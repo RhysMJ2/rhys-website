@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Error 500{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active">Error 500</li>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>
+            Error 500
+            <small class="text-muted"> - Server Error!</small>
+        </h1>
+    </div>
+    <div class="container-fluid">
+    <p>That was our fault, please try again!</p>
+    </div>
+{% endblock %}
