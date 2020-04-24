@@ -69,7 +69,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'firstdjango.urls'
 ROOT_HOSTCONF = 'firstdjango.hosts'
 PARENT_HOST = 'localhost:3000' if DEBUG else 'isfrom.cymru'
-SESSION_COOKIE_DOMAIN = "localhost" if DEBUG else '.isfrom.cymru'
+SESSION_COOKIE_DOMAIN = '.isfrom.cymru'
 DOMAIN_NAME = "isfrom.cymru"
 DEFAULT_HOST = 'www'
 
