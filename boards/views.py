@@ -170,3 +170,19 @@ class PostUpdateView(UpdateView):
         post.updated_at = timezone.now()
         post.save()
         return redirect('topic_posts', pk=post.topic.board.pk, topic_pk=post.topic.pk)
+
+
+# error pages
+
+def error_404(request, exception):
+    data = {}
+    response = render(request, 'error/404.html', data)
+    response.status_code = 404
+    return response
+
+
+def error_500(request):
+    data = {}
+    response = render(request, 'error/500.html', data)
+    response.status_code = 500
+    return response

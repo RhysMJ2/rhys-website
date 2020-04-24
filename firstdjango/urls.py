@@ -32,3 +32,8 @@ urlpatterns = [
     path('boards/<pk>/topics/<topic_pk>/posts/<post_pk>/edit/',
          views.PostUpdateView.as_view(), name='edit_post'),
 ]
+
+handler404 = 'boards.views.error_404'
+handler500 = 'boards.views.error_500'
+# handler403 = 'boards.views.error_403'
+# handler400 = 'boards.views.error_400'
