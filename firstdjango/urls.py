@@ -16,10 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
-
+from django.contrib.sitemaps.views import sitemap
 import myapi
 from accounts import views as accounts_view
 from boards import views
+from firstdjango.sitemaps import StaticViewSitemap
+sitemaps = {
+    'static': StaticViewSitemap
+}
 
 urlpatterns = [
     path('', views.BoardListView.as_view(), name='home'),
@@ -31,6 +35,8 @@ urlpatterns = [
     path('boards/<int:pk>/topics/<int:topic_pk>/reply/', views.reply_topic, name='reply_topic'),
     path('boards/<pk>/topics/<topic_pk>/posts/<post_pk>/edit/',
          views.PostUpdateView.as_view(), name='edit_post'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
+         name='django.contrib.sitemaps.views.sitemap'),
 ]
 
 handler404 = 'boards.views.error_404'
