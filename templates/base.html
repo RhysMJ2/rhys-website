@@ -32,7 +32,7 @@
                                 {{ user.username }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
-                                <a class="dropdown-item" href="#">My Account</a>
+                                <a class="dropdown-item" href="{% host_url 'my_account' host 'account' %}">My Account</a>
                                 <a class="dropdown-item" href="{% host_url 'password_change' host 'account' %}">Change Password</a>
                                 <a class="dropdown-item" href="{% host_url 'home' host 'api' %}">Access API <small class="text-muted">(Experimental)</small></a>
                                 <div class="dropdown-divider"></div>
