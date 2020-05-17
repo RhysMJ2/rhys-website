@@ -7,8 +7,28 @@
 {% endblock %}
 
 {% block content %}
-    {% if user.is_staff %}
-
+    {% if perms.catalog.can_edit_board %}
+    <div class="modal fade" id="editBoardModal" tabindex="-1" role="dialog" aria-labelledby="editBoardModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editBoardModalTitle">Edit Board</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Board Name:</label>
+                        <input type="text" class="form-control" id="board-name">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
     {% endif %}
     <table class="table">
         <thead class="thead-inverse">
@@ -17,6 +37,11 @@
             <th>Posts</th>
             <th>Topics</th>
             <th>Last Post</th>
+            <th>
+            {% if perms.boards.can_add_board %}
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editBoardModal">New</button>
+            {% endif %}
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -47,8 +72,31 @@
                         {% endif %}
                     {% endwith %}
                 </td>
+                {% if perms.boards.can_edit_board %}
+                <td class="align-middle">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editBoardModal" data-whatever="{{ board.name }}">Edit</button>
+                </td>
+                {% elif perms.boards.can_archive_board %}
+                <td class="align-middle">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="">Archive</button>
+                </td>
+                {% endif %}
             </tr>
         {% endfor %}
         </tbody>
     </table>
 {% endblock %}
+
+{% if user.is_staff %}
+{% block javascript %}
+    <script>$('#editBoardModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var title= button.data('whatever') // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        modal.find('.modal-title').text('Edit Board (' + title + ')')
+        modal.find('.modal-body input').val(title)
+    })</script>
+{% endblock %}
+{% endif %}
