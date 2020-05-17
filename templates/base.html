@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
     {% block stylesheet %}{% endblock %}
+
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    {% block javascript %}{% endblock %}
 </head>
 <body>
 {% block body %}
@@ -48,7 +53,13 @@
             </div>
         </div>
     </nav>
-
+    <br>
+    <div class="container-fluid">
+    <div class="alert alert-primary text-center" role="alert">
+        You can find the code for this website on <a href="https://github.com/RhysMJ2/rhys-website" class="alert-link">GitHub</a>,
+        and view my other projects on my <a href="https://static.{{ request.META.HTTP_HOST }}" class="alert-link">static website.</a>
+    </div>
+    </div>
     <div class="container">
         <ol class="breadcrumb my-4">
             {% block breadcrumb %}
@@ -58,9 +69,5 @@
     {% endblock %}
 </div>
 {% endblock body %}
-<script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-<script src="{% static 'js/popper.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
-{% block javascript %}{% endblock %}
 </body>
 </html>

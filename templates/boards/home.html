@@ -1,5 +1,5 @@
 {% extends 'boards/../base.html' %}
-
+{% load static %}
 {% block title %}Home{% endblock %}
 
 {% block breadcrumb %}
@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block content %}
+    {% include 'modals/home_edit_board.html' %}
     <table class="table">
         <thead class="thead-inverse">
         <tr>
@@ -14,6 +15,11 @@
             <th>Posts</th>
             <th>Topics</th>
             <th>Last Post</th>
+            {% if user.is_staff %}
+            <th>
+                <button type="button" class="btn btn-primary">Create New</button>
+            </th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
@@ -43,6 +49,13 @@
                         </small>
                         {% endif %}
                     {% endwith %}
+                </td>
+                <td>
+                    {% if user.is_staff %}
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editBoardModal" data-board="test">
+                        Edit
+                    </button>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
