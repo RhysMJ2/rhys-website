@@ -15,9 +15,9 @@ class HeroViewSet(viewsets.ModelViewSet):
 
 class BoardViewSet(viewsets.ModelViewSet):
     authentication_classes = [authentication.SessionAuthentication]
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.DjangoModelPermissions]
 
-    queryset = Board.objects.all().order_by('name')
+    queryset = Board.objects.all().order_by('id')
     serializer_class = BoardSerializer
 
 

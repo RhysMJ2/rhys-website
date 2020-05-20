@@ -93,21 +93,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'firstdjango.wsgi.application'
-'''
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAdminUser',
-    ],
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle'
-    ],
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '20/day',
-        'user': '150/day'
-    }
-}
-'''
+        'rest_framework.permissions.IsAuthenticated',
+    ]}
+
 # Database
 if DEBUG:
     DATABASES = {
