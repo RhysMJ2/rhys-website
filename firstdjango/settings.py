@@ -93,7 +93,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'firstdjango.wsgi.application'
-
+'''
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAdminUser',
@@ -107,7 +107,7 @@ REST_FRAMEWORK = {
         'user': '150/day'
     }
 }
-
+'''
 # Database
 if DEBUG:
     DATABASES = {

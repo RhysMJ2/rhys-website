@@ -18,7 +18,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form>
+                <form check-unsaved>
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="recipient-name" class="col-form-label">Board Name:</label>
@@ -30,7 +30,7 @@
     </div>
     </div>
     {% endif %}
-    <table class="table table-responsive">
+    <table class="table">
         <thead class="thead-inverse">
         <tr>
             <th>Board</th>
