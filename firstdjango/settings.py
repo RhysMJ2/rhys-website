@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.contrib.sitemaps',
 
+    'corsheaders',
     'boards.templatetags.gravatar',
     'django_hosts',
     'widget_tweaks',
@@ -56,6 +57,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django_hosts.middleware.HostsRequestMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -66,6 +69,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_hosts.middleware.HostsResponseMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'firstdjango.urls'
 ROOT_HOSTCONF = 'firstdjango.hosts'

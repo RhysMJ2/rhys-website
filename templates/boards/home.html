@@ -9,7 +9,7 @@
 {% block content %}
     {% if perms.catalog.can_edit_board %}
     <div class="modal fade" id="editBoardModal" tabindex="-1" role="dialog" aria-labelledby="editBoardModalTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editBoardModalTitle">Edit Board</h5>
@@ -18,7 +18,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form check-unsaved>
+                <form>
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="recipient-name" class="col-form-label">Board Name:</label>
@@ -74,7 +74,7 @@
                 </td>
                 {% if perms.boards.can_edit_board %}
                 <td class="align-middle">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editBoardModal" data-whatever="{{ board.name }}">Edit</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editBoardModal" data-boardid="{{ board.id }}">Edit</button>
                 </td>
                 {% elif perms.boards.can_archive_board %}
                 <td class="align-middle">
@@ -91,12 +91,23 @@
 {% block javascript %}
     <script>$('#editBoardModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget) // Button that triggered the modal
-        var title= button.data('whatever') // Extract info from data-* attributes
+        var boardId = button.data('boardid') // Extract info from data-* attributes
         // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
         // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        var modal = $(this)
-        modal.find('.modal-title').text('Edit Board (' + title + ')')
-        modal.find('.modal-body input').val(title)
+        $.ajax({
+            type: 'GET',
+            url: "//api.{{ request.META.HTTP_HOST }}/boards/board/"+boardId+"/?format=json",
+            dataType: "json",
+            success: function (data) {
+                $.each(data, function(index, element) {
+                    var title = element.name
+                    var modal = $(this)
+                    modal.find('.modal-title').text('Edit Board (' + title + ')')
+                    modal.find('.modal-body input').val(title)
+                });
+            }
+        });
+
     })</script>
 {% endblock %}
 {% endif %}
