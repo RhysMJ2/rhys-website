@@ -1,8 +1,8 @@
 {% extends 'boards/../base.html' %}
 
-{% block title %}{{ user.name }} ({{ user.username }}){% endblock %}
+{% block title %}{{ profile_data.first_name }} {{ profile_data.last_name }} ({{ profile_data.username }}){% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item">Accounts</li>
-    <li class="breadcrumb-item active">{{ user.username }}</li>
+    <li class="breadcrumb-item">User</li>
+    <li class="breadcrumb-item active">{{ profile_data.username }}</li>
 {% endblock %}

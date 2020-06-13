@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login as auto_login
 from django.contrib.auth import views as auth_views
@@ -58,5 +58,5 @@ class UserUpdateView(UpdateView):
 def user_profile(request, username=None):
     if username is None:
         username = request.user.username
-    user = User.objects.get(username=username)
-    return render(request, 'accounts/profile.html', {"user": user})
+    profile_data = get_object_or_404(User, username=username)
+    return render(request, 'accounts/profile.html', {"profile_data": profile_data})

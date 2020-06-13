@@ -1,5 +1,13 @@
 {% extends 'boards/../base.html' %}
-
+{% load hosts %}
 {% block title %}Logged Out{% endblock %}
 
 {% block breadcrumb %}<li class="breadcrumb-item active>">Logged Out</li>{% endblock %}
+
+{% block content %}
+    <a class="btn btn-dark" href="{% host_url 'home' host 'www' %}">
+    Home
+    </a>
+    <h1>You've been logged out</h1>
+    <p>We'll see you soon</p>
+{% endblock %}

@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
+{% load hosts %}
 
-{% block title %}My Account{% endblock %}
+{% block title %}Edit Account{% endblock %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item active">My Account</li>
+    <li class="breadcrumb-item">User</li>
+    <li class="breadcrumb-item"><a href="{% host_url 'user_profile' username=user.username host 'account' %}">{{ user.username }}</a></li>
+    <li class="breadcrumb-item active">Edit</li>
 {% endblock %}
 
 {% block content %}
