@@ -1,0 +1,8 @@
+{% extends 'boards/../base.html' %}
+
+{% block title %}{{ user.name }} ({{ user.username }}){% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item">Accounts</li>
+    <li class="breadcrumb-item active">{{ user.username }}</li>
+{% endblock %}

@@ -13,10 +13,6 @@ from django_hosts import reverse
 from accounts.forms import SignUpForm
 
 
-def redirected(request):
-    return redirect(reverse('home', host='www'))
-
-
 def authenticated(request):
     if request.user.is_authenticated:
         return redirect(reverse('home', host='www'))
@@ -57,3 +53,10 @@ class UserUpdateView(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+
+def user_profile(request, username=None):
+    if username is None:
+        username = request.user.username
+    user = User.objects.get(username=username)
+    return render(request, 'accounts/profile.html', {"user": user})
