@@ -175,8 +175,8 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 
-DEFAULT_FROM_EMAIL = 'Django Boards <noreply@isfrom.cymru>'
-EMAIL_SUBJECT_PREFIX = '[Django Boards] '
+DEFAULT_FROM_EMAIL = 'Rhys Website <noreply@isfrom.cymru>'
+EMAIL_SUBJECT_PREFIX = '[Rhys Website] '
 
 # Configure Django App for Heroku.
 

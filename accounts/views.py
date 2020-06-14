@@ -49,7 +49,7 @@ class UserUpdateView(UpdateView):
     model = User
     fields = ('first_name', 'last_name', 'email',)
     template_name = "accounts/my_account.html"
-    success_url = reverse_lazy('edit_account')
+    success_url = reverse_lazy('edit_profile')
 
     def get_object(self, queryset=None):
         return self.request.user
