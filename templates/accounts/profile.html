@@ -9,20 +9,33 @@
 
 {% block content %}
     <div class="row">
-    <div class="col-lg-3 col-md-8 col-sm-10 col-12 mb-3" id="sticky-sidebar">
-    {% if user.pk == profile_data.pk %}
-    <div class="mb-4">
-        <a class="btn btn-primary" href="{% host_url 'edit_profile' host 'account' %}">Edit Profile</a>
-    </div>
-    {% endif %}
-    <div class="mb-4">
-        <p class="display-4">{{ profile_data.username }}</p>
-    </div>
-        <img src="{{ profile_data|gravatar }}" alt="{{ profile_data.username }}" class="w-75 rounded">
-        <p>{{ profile_data.first_name }} {{ profile_data.last_name }}</p>
-    </div>
+        <div class="col-lg-3 col-md-8 col-sm-10 col-12 mb-3" id="sticky-sidebar"> # todo sticky sidebar doesn't work
+            {% if user.pk == profile_data.pk %}
+                <div class="mb-4">
+                    <a class="btn btn-primary" href="{% host_url 'edit_profile' host 'account' %}">Edit Profile</a>
+                </div>
+            {% endif %}
+        <div class="row">
+            <div class="col-lg-12 col-md-4 col-sm-2 mb-4 order-lg-0 order-md-1">
+                <p class="h4">{{ profile_data.username }}</p>
+            </div>
+            <div class="col-lg-12 col-md-6 col-sm-1 order-lg-1 order-md-0">
+                <img src="{{ profile_data|gravatar }}" alt="{{ profile_data.username }}" class="w-100 rounded">
+            </div>
+            <div class="col-lg-12 col-md-6 col-sm-12 order-lg-2 order-md-2">
+                <p class="text-dark">{{ profile_data.first_name }} {{ profile_data.last_name }}</p>
+            </div>
+        </div>
+        </div>
         <div class="col-lg-9 col-md-8 col-sm-10 col-12 mb-3" id="main">
-            <p>test paragraph</p>
+            <p class="display-4">Welcome to the new profile page!</p>
+            <p class="text-info text-center">
+                We haven't finished our new profile pages yet :( <br>
+                We have a few things we need to finish, such as privacy settings before you can edit and view other user's profiles.
+            </p>
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/VFZNvj-HfBU?rel=0"></iframe>
+            </div>
         </div>
     </div>
 {% endblock %}
