@@ -1,21 +1,30 @@
 {% extends 'base.html' %}
 {% load hosts %}
 
-{% block title %}Edit Account{% endblock %}
+{% block title %}Edit Profile{% endblock %}
 {% block breadcrumb %}
     <li class="breadcrumb-item">User</li>
     <li class="breadcrumb-item"><a href="{% host_url 'user_profile' username=user.username host 'account' %}">{{ user.username }}</a></li>
-    <li class="breadcrumb-item active">Edit</li>
+    <li class="breadcrumb-item active">Edit Profile</li>
 {% endblock %}
 
 {% block content %}
+    <p class="display-4">Edit Profile</p>
     <div class="row">
-        <div class="col-lg-6 col-md-8 col-sm-10">
+        <div class="col-lg-6 col-md-8 col-sm-10 col-12 mb-3">
+            <h3>Your Details</h3>
             <form method="post" novalidate>
                 {% csrf_token %}
                 {% include 'includes/form.html' %}
                 <button type="submit" class="btn btn-success">Save changes</button>
             </form>
+        </div>
+        <div class="col-lg-6 col-md-4 col-sm-10 col-12 mb-4">
+            <h3>Privacy Settings</h3>
+            <div class="mt-4">
+            <h5>Coming Soon...</h5>
+            <p class="text-info">We understand that privacy is important to you and we're working hard on getting privacy controls for you.</p>
+            </div>
         </div>
     </div>
 {% endblock %}

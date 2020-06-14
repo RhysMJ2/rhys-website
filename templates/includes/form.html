@@ -6,6 +6,14 @@
         <p{% if forloop.last %} class="mb-0"{% endif %}>{{ error }}</p>
     {% endfor %}
     </div>
+
+{% elif not form.is_valid.valid and form.is_bound %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>There are some errors.</strong> Please check and correct any errors below
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
 {% endif %}
 
 {% for field in form %}

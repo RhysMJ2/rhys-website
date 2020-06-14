@@ -166,7 +166,7 @@ STATICFILES_DIRS = [
 #LOGOUT_REDIRECT_URL = 'redirect'
 #LOGIN_REDIRECT_URL = 'redirect'
 
-#LOGIN_URL = 'account.localhost:3000/login' if DEBUG else 'account.isfrom.cymru/login'
+LOGIN_URL = '//account.server.home/login' if DEBUG else '//account.isfrom.cymru/login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config("EMAIL_HOST")
