@@ -9,7 +9,7 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-lg-3 col-md-8 col-sm-10 col-12 mb-3" id="sticky-sidebar"> # todo sticky sidebar doesn't work
+        <div class="col-lg-3 col-md-8 col-sm-10 col-12 mb-3" id="sticky-sidebar">
             {% if user.pk == profile_data.pk %}
                 <div class="mb-4">
                     <a class="btn btn-primary" href="{% host_url 'edit_profile' host 'account' %}">Edit Profile</a>
