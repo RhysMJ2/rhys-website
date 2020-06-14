@@ -1,7 +1,28 @@
 {% extends 'boards/../base.html' %}
-
+{% load hosts %}
+{% load gravatar %}
 {% block title %}{{ profile_data.first_name }} {{ profile_data.last_name }} ({{ profile_data.username }}){% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item active">{{ profile_data.username }}</li>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+    <div class="col-lg-3 col-md-8 col-sm-10 col-12 mb-3" id="sticky-sidebar">
+    {% if user.pk == profile_data.pk %}
+    <div class="mb-4">
+        <a class="btn btn-primary" href="{% host_url 'edit_profile' host 'account' %}">Edit Profile</a>
+    </div>
+    {% endif %}
+    <div class="mb-4">
+        <p class="display-4">{{ profile_data.username }}</p>
+    </div>
+        <img src="{{ profile_data|gravatar }}" alt="{{ profile_data.username }}" class="w-75 rounded">
+        <p>{{ profile_data.first_name }} {{ profile_data.last_name }}</p>
+    </div>
+        <div class="col-lg-9 col-md-8 col-sm-10 col-12 mb-3" id="main">
+            <p>test paragraph</p>
+        </div>
+    </div>
 {% endblock %}
