@@ -1,0 +1,6 @@
+{% load hosts %}
+{% autoescape off %}
+    Hi {{ user.username }},
+    Please click on the link to confirm your registration,
+    https:{% host_url 'activate' uidb64=uid token=token host 'account' %}
+{% endautoescape %}
