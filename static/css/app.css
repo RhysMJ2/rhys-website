@@ -8,7 +8,7 @@
     --input-padding-y: .75rem;
 }
 
-.form-signin {
+.form-base {
     width: 100%;
     max-width: 420px;
     padding: 15px;

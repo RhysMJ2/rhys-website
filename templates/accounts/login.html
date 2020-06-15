@@ -8,7 +8,7 @@
             <div class="card">
                 <div class="card-body">
                     <h1 class="text-center h3 mb-3">Log In</h1>
-                    <form class="group-signin" method="post" novalidate>
+                    <form class="form-base" method="post" novalidate>
                         {% csrf_token %}
                         <input type="hidden" name="next" value="{{ next }}">
                         {% include 'includes/form.html' %}

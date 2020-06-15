@@ -17,9 +17,15 @@
 {% endif %}
 
 {% for field in form %}
+    {% if field.field.widget.input_type %}
     <div class="form-label-group">
         {% render_field field class=field|input_class placeholder=field.name %}
         {{ field.label_tag }}
+    {% else %}
+    <div class="form-group">
+        {{ field.label_tag }}
+        {% render_field field class=field|input_class %}
+    {% endif %}
         {% for error in field.errors %}
             <div class="invalid-feedback">
                 {{ error }}
