@@ -9,6 +9,7 @@ urlpatterns = [
     path('signup/', accounts_view.signup, name='signup'),
     path('login/', accounts_view.login, name="login"),
     path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
+
     path('settings/password/reset/',
          auth_views.PasswordResetView.as_view(
              template_name='accounts/password_reset.html',
@@ -31,7 +32,15 @@ urlpatterns = [
     path('settings/password/done/',
          auth_views.PasswordChangeDoneView.as_view(template_name='accounts/password_change_done.html'),
          name='password_change_done'),
+
     path('settings/profile/', accounts_view.UserUpdateView.as_view(), name='edit_profile'),
-    path('accounts/profile/', accounts_view.user_profile, name='user_profile'), # todo sticky sidebar doesn't work
+    # path('settings/privacy/'),
+
+    path('accounts/profile/', accounts_view.user_profile, name='user_profile'),
+    # path('accounts/profile/details/'),
     path('accounts/profile/<username>/', accounts_view.user_profile, name='user_profile'),
+    # path('accounts/profile/<username>/posts/'),
 ]
+
+handler404 = 'boards.views.error_404'
+handler500 = 'boards.views.error_500'
