@@ -36,10 +36,6 @@ def signup(request):
             form = SignUpForm(request.POST)
             if form.is_valid():
                 user = form.save(commit=False)
-
-                user.is_active = False
-                user.save()
-                # auto_login(request, user)
                 current_site = get_current_site(request)
                 mail_subject = '[Rhys Website] Activate your Rhys Website account.'
                 message = render_to_string('accounts/acc_active_email.html', {
@@ -50,7 +46,11 @@ def signup(request):
                 to_email = form.cleaned_data.get('email')
                 email = EmailMessage(mail_subject, message, to=[to_email])
                 email.send()
-                return HttpResponse('Please confirm your email address to complete the registration')
+                user.is_active = False
+                user.save()
+                # auto_login(request, user)
+
+                return render(request, 'accounts/signup_done.html', {'form': form})
 
         else:
             form = SignUpForm()
@@ -67,9 +67,8 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         auto_login(request, user)
-        return HttpResponse('Thank you for your email confirmation. You\'ve been logged in.')
-    else:
-        return HttpResponse('Activation link is invalid!')
+
+    return render(request, 'accounts/signup_confirm.html', {'user': user})
 
 
 def deactivate(request, uidb64, token):
@@ -79,11 +78,9 @@ def deactivate(request, uidb64, token):
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
-        email = user.email
         user.delete()
-        return HttpResponse('The account associated with the email {} has been deleted.'.format(email))
-    else:
-        return HttpResponse('No action has been taken on any account as the link is invalid.')
+
+    return render(request, 'accounts/signup_deactivated.html', {'user': user})
 
 
 def login(request):

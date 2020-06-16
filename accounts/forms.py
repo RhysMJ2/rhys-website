@@ -13,8 +13,11 @@ class SignUpForm(UserCreationForm):
 
     def clean(self):
         email = self.cleaned_data.get('email')
+        username = self.cleaned_data.get('username')
         if User.objects.filter(email=email).exists():
-            raise ValidationError({'email': ["This email is already associated with an account.",]})
+            raise ValidationError({'email': ["This email is already associated with an account.", ]})
+        if User.objects.filter(username=username).exists():
+            raise ValidationError({'username': ["Username already taken.", ]})
         return self.cleaned_data
 
     class Meta:
