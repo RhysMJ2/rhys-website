@@ -36,6 +36,7 @@ def signup(request):
             form = SignUpForm(request.POST)
             if form.is_valid():
                 user = form.save(commit=False)
+
                 user.is_active = False
                 user.save()
                 # auto_login(request, user)
@@ -66,9 +67,23 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         auto_login(request, user)
-        return HttpResponse('Thank you for your email confirmation. You\'ve been logged in')
+        return HttpResponse('Thank you for your email confirmation. You\'ve been logged in.')
     else:
         return HttpResponse('Activation link is invalid!')
+
+
+def deactivate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        email = user.email
+        user.delete()
+        return HttpResponse('The account associated with the email {} has been deleted.'.format(email))
+    else:
+        return HttpResponse('No action has been taken on any account as the link is invalid.')
 
 
 def login(request):
