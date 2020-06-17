@@ -23,3 +23,20 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
+
+
+class UserUpdateForm(forms.ModelForm):
+    email = forms.CharField(max_length=254, required=True, widget=forms.EmailInput(),
+                            help_text="While we upgrade our systems you cannot change the email on the account ",
+                            disabled=True)
+
+    def clean(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise ValidationError({'email': ["This email is already associated with an account.", ]})
+
+        return self.cleaned_data
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email',)

@@ -16,7 +16,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.generic import UpdateView
 from django_hosts import reverse
 
-from accounts.forms import SignUpForm
+from accounts.forms import SignUpForm, UserUpdateForm
 from accounts.tokens import account_activation_token
 
 
@@ -42,7 +42,7 @@ def signup(request):
                     'user': user,
                     'domain': current_site.domain,
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token': account_activation_token.make_token(user),})
+                    'token': account_activation_token.make_token(user), })
                 to_email = form.cleaned_data.get('email')
                 email = EmailMessage(mail_subject, message, to=[to_email])
                 email.send()
@@ -83,6 +83,17 @@ def deactivate(request, uidb64, token):
     return render(request, 'accounts/signup_deactivated.html', {'user': user})
 
 
+def change_email(request, uidb64, token): # todo finish
+    uid = force_text(urlsafe_base64_decode(uidb64))
+    user = User.objects.get(pk=request.user.pk)
+    if account_activation_token.check_token(uid, token):
+        request.user.email = uid
+
+
+def revert_email(request, uidb64, token):
+    pass
+
+
 def login(request):
     auth = authenticated(request)
     if auth is not None:
@@ -94,10 +105,41 @@ def login(request):
 @method_decorator(login_required, name='dispatch')
 class UserUpdateView(UpdateView):
     model = User
-    fields = ('first_name', 'last_name', 'email',)
     template_name = "accounts/my_account.html"
+    form_class = UserUpdateForm
     success_url = reverse_lazy('edit_profile')
+    """
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
 
+        if form.is_valid():
+            return self.form_valid(form)
+
+            current_site = get_current_site(request)
+            mail_subject = '[Rhys Website] Changing your email.'
+            message = render_to_string('accounts/acc_change_email.html', {
+            'user': request.user,
+            'domain': current_site.domain,
+            'uid': urlsafe_base64_encode(force_bytes(form.cleaned_data.get('email'))),
+            'token': account_activation_token.make_token(request.user.email), })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(mail_subject, message, to=[to_email])
+            email.send()
+            # todo need to send thus email after email changed
+            '''
+            mail_subject = "[Rhys Website] Account Email Changed"
+            message = render_to_string('accounts/acc_active_email.html', {
+                'user': request.user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(request.user.email)),
+                'token': account_activation_token.make_token(request.user.username), })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(mail_subject, message, to=[to_email])
+            email.send()'''
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+    """
     def get_object(self, queryset=None):
         return self.request.user
 
