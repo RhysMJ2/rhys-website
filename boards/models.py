@@ -27,6 +27,7 @@ class Board(models.Model):
 class Topic(models.Model):
     subject = models.CharField(max_length=255)
     last_updated = models.DateTimeField(auto_now_add=True)
+    # todo change on_delete https://docs.djangoproject.com/en/3.0/ref/models/fields/
     board = models.ForeignKey(Board, related_name='topics', on_delete=models.DO_NOTHING)
     starter = models.ForeignKey(User, related_name='topics', on_delete=models.DO_NOTHING)
     views = models.PositiveIntegerField(default=0)
