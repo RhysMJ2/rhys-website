@@ -6,12 +6,26 @@
         <p{% if forloop.last %} class="mb-0"{% endif %}>{{ error }}</p>
     {% endfor %}
     </div>
+
+{% elif not form.is_valid.valid and form.is_bound %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>There are some errors.</strong> Please check and correct any errors below
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
 {% endif %}
 
 {% for field in form %}
+    {% if field.field.widget.input_type %}
+    <div class="form-label-group">
+        {% render_field field class=field|input_class placeholder=field.name %}
+        {{ field.label_tag }}
+    {% else %}
     <div class="form-group">
         {{ field.label_tag }}
         {% render_field field class=field|input_class %}
+    {% endif %}
         {% for error in field.errors %}
             <div class="invalid-feedback">
                 {{ error }}

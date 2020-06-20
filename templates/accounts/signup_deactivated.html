@@ -1,0 +1,30 @@
+{% extends 'accounts/base_accounts.html' %}
+{% load hosts %}
+{% block title %}
+    {% if user.is_valid %}
+        Account for {{ user.username }} deleted
+    {% else %}
+        Invalid deactivation link
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10">
+            <div class="card">
+                <div class="card-body">
+                    {% if user.is_valid %}
+                        <h3 class="card-title">Account deactivated for @{{ user.username }}</h3>
+                        <p>The account for the email {{ user.email }} has been deleted. If this was a mistake please sign up again</p>
+                    {% else %}
+                        <h3 class="card-title">Invalid link</h3>
+                        <div class="alert alert-danger" role="alert">
+                            It looks like you clicked on an invalid password reset link. Please try again.
+                        </div>
+                    {% endif %}
+                    <a href="{% host_url 'home' host 'www' %}" class="btn btn-secondary btn-block">Go home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

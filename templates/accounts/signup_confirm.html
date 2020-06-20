@@ -1,0 +1,31 @@
+{% extends 'accounts/base_accounts.html' %}
+{% load hosts %}
+{% block title %}
+    {% if user.is_valid %}
+        Account for {{ user.username }} activated
+    {% else %}
+        Invalid activation link
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10">
+            <div class="card">
+                <div class="card-body">
+                    {% if user.is_valid %}
+                        <h3 class="card-title">Account activated for @{{ user.username }}</h3>
+                        <p>Thank you for activating your account, you have been automatically logged in.</p>
+                        <a href="{% host_url 'user_profile' host 'account' %}" class="btn btn-secondary btn-block">Go to profile</a>
+                    {% else %}
+                        <h3 class="card-title">Invalid link</h3>
+                        <div class="alert alert-danger" role="alert">
+                            It looks like you clicked on an invalid password reset link. Please try again.
+                        </div>
+                        <a href="{% host_url 'home' host 'www' %}" class="btn btn-secondary btn-block">Go home</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

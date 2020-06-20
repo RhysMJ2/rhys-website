@@ -1,0 +1,15 @@
+{% load hosts %}
+{% autoescape off %}
+    Hi {{ user.username }},
+
+    Email used for account - {{ user.email }}
+
+    Please click on the link to confirm your registration,
+    https:{% host_url 'activate' uidb64=uid token=token host 'account' %}
+
+    If you haven't signed up for this account please click the on the link below to delete the account,
+    https:{% host_url 'deactivate' uidb64=uid token=token host 'account' %}
+
+    From
+    The Rhys Website Team
+{% endautoescape %}

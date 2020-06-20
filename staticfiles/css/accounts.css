@@ -1,9 +1,9 @@
 body {
-    background-image: url(../img/shattered.png);
+    background-color: #f5f5f5;
 }
 
 .logo {
-    font-family: 'Peralta', cursive;
+    font-family: 'Josefin Sans', cursive;
 }
 
 .logo a {
