@@ -39,9 +39,9 @@ urlpatterns = [
     path('settings/profile/', accounts_view.UserUpdateView.as_view(), name='edit_profile'), # todo email verificatio here and unique email check
     # path('settings/privacy/'),
 
-    path('accounts/profile/', accounts_view.user_profile, name='user_profile'),
+    path('accounts/profile/', accounts_view.UserProfileView.as_view(), name='user_profile'),
     # path('accounts/profile/details/'),
-    path('accounts/profile/<username>/', accounts_view.user_profile, name='user_profile'),
+    path('accounts/profile/<username>/', accounts_view.UserProfileView.as_view(), name='user_profile'),
     # path('accounts/profile/<username>/posts/'),
 ]
 

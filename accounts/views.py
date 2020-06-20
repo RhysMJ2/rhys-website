@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
@@ -13,11 +14,12 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, ListView
 from django_hosts import reverse
 
 from accounts.forms import SignUpForm, UserUpdateForm
 from accounts.tokens import account_activation_token
+from boards.models import Post
 
 
 def authenticated(request):
@@ -149,3 +151,21 @@ def user_profile(request, username=None):
         username = request.user.username
     profile_data = get_object_or_404(User, username=username)
     return render(request, 'accounts/profile.html', {"profile_data": profile_data})
+
+
+class UserProfileView(ListView):
+    model = Post
+    template_name = 'accounts/profile.html'
+    paginate_by = 20
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["profile_data"] = User.objects.get(username=self.user.username)
+
+        return super().get_context_data(**context)
+
+    def get_queryset(self):
+        user = self.request.user.username if self.kwargs.get("username") is None else self.kwargs.get("username")
+        self.user = get_object_or_404(User, username=user)
+        queryset = self.user.posts.order_by('created_at')
+        return queryset

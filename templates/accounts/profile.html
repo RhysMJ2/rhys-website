@@ -33,6 +33,9 @@
         </div>
         <div class="col-md-9 col-sm-10 col-12 mb-3" id="main">
             <p class="display-4">Welcome to the new profile page!</p>
+            {% for post in post_list %}
+            {{ post.message }}
+            {% endfor %}
             <p class="text-info text-center">
                 We haven't finished our new profile pages yet :( <br>
                 We have a few things we need to finish, such as privacy settings, before you can edit and view other users' profiles.
