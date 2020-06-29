@@ -7,6 +7,38 @@
 {% endblock %}
 
 {% block content %}
+    {% if perms.catalog.can_edit_board %}
+    <div class="modal fade" id="editBoardModal" tabindex="-1" role="dialog" aria-labelledby="editBoardModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editBoardModalTitle">New Board</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label class="text-dark" id="board-id"></label>
+                <form>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="board-name" class="col-form-label">Board Name:</label>
+                        <input type="text" class="form-control" id="board-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="desc-text" class="col-form-label">Description:</label>
+                        <textarea class="form-control" id="desc-text"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="update-button">Update Board</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    {% endif %}
     <table class="table">
         <thead class="thead-inverse">
         <tr>
@@ -14,6 +46,11 @@
             <th>Posts</th>
             <th>Topics</th>
             <th>Last Post</th>
+            <th>
+            {% if perms.boards.can_add_board %}
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editBoardModal">New</button>
+            {% endif %}
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -44,8 +81,61 @@
                         {% endif %}
                     {% endwith %}
                 </td>
+                {% if perms.boards.can_edit_board %}
+                <td class="align-middle">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editBoardModal" data-boardid="{{ board.id }}">Edit</button>
+                </td>
+                {% elif perms.boards.can_archive_board %}
+                <td class="align-middle">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="">Archive</button>
+                </td>
+                {% endif %}
             </tr>
         {% endfor %}
         </tbody>
     </table>
 {% endblock %}
+
+{% if user.is_staff %}
+{% block javascript %}
+    <script>
+        function changeModal(data, modal) {
+            document.getElementById("update-button").disabled = false;
+            var title = data.name;
+            var desc = data.description;
+            modal.find('#editBoardModalTitle').text('Edit Board (' + title + ')');
+            modal.find('#board-name').val(title);
+            modal.find('#desc-text').val(desc);
+        }
+        $('#editBoardModal').on('show.bs.modal', function (event) {
+        document.getElementById("update-button").disabled = true;
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var boardId = button.data('boardid'); // Extract info from data-* attributes
+        var modal = $(this);
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        if (boardId == null) {
+            document.getElementById("update-button").disabled = false;
+            modal.find('#board-id').text("Board ID: (New Board)");
+        }
+        else {
+            modal.find('#board-id').text("Board ID: " + boardId);
+            modal.find('#editBoardModalTitle').text('Loading...');
+            modal.find('#board-name').val('Loading...');
+            modal.find('#desc-text').val('Loading...');
+            $.ajax({
+                type: 'GET',
+                url: "//api.{{ request.META.HTTP_HOST }}/boards/board/" + boardId + "/",
+                dataType: "json",
+                success: function (data) {
+                    changeModal(data, modal);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+        }
+    })</script>
+{% endblock %}
+{% endif %}

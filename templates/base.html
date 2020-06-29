@@ -47,6 +47,9 @@
                                 <a class="dropdown-item" href="{% host_url 'user_profile' host 'account' %}">My Account</a>
                                 <a class="dropdown-item" href="{% host_url 'password_change' host 'account' %}">Change Password</a>
                                 <a class="dropdown-item" href="{% host_url 'home' host 'api' %}">Access API <small class="text-muted">(Experimental)</small></a>
+                                {% if user.is_staff %}
+                                <a class="dropdown-item" href="//{{ request.META.HTTP_HOST }}/admin">Admin Dashboard</a>
+                                {% endif %}
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{% host_url 'logout' host 'account' %}">Log out</a>
                             </div>
@@ -62,16 +65,21 @@
             </div>
         </nav>
     </header>
-
+    <br>
+    <div class="container-fluid">
+    <div class="alert alert-primary text-center" role="alert">
+        <b>Notice: </b>Code for this website can be found on <a href="https://github.com/RhysMJ2/rhys-website" class="alert-link">Github</a> and is hosted on Heroku. You can find other projects on my <a href="//static.isfrom.cymru" class="alert-link">static website</a>
+    </div>
+    </div>
     <div class="container">
         <ol class="breadcrumb my-4">
             <li class="breadcrumb-item"><a href="{% host_url 'home' host 'www' %}">Home</a></li>
             {% block breadcrumb %}
             {% endblock %}
         </ol>
+
     {% block content %}
     {% endblock %}
-
 </div>
 </main>
 <footer class="footer mt-auto py-3">
@@ -80,9 +88,13 @@
 </div>
 </footer>
 {% endblock body %}
-<script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script src="https://getbootstrap.com/docs/4.1/assets/js/docs.min.js"></script>
 {% block javascript %}{% endblock %}
+
+
 </body>
 </html>
