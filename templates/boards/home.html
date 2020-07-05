@@ -107,7 +107,7 @@
         modal.find('#board-name').val(title);
         modal.find('#desc-text').val(desc);
     }
-    $('#editBoardModal').on('show.bs.modal', function (event) {
+    $('#editBoardModal').on('shown.bs.modal', function (event) {
         document.getElementById("update-button").disabled = true;
         let button = $(event.relatedTarget); // Button that triggered the modal
         let boardId = button.data('boardid'); // Extract info from data-* attributes
@@ -137,7 +137,9 @@
                 if (request.status >= 200 && request.status < 400) {
                     changeModal(data, modal);
                 } else {
-                    showAlertMessage(request.status, "danger");
+                    let errorMessage = "Error: " + request.status +" ("+request.statusText+")";
+                    showAlertMessage(errorMessage, "danger");
+                    modal.modal('hide');
                 }
             }
             request.send()
