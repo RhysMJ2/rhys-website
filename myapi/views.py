@@ -4,6 +4,7 @@ from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 from rest_framework.views import APIView
 
 from boards.models import Board
+from .permissions import EditBoardOrReadOnly
 from .serializers import HeroSerializer, BoardSerializer
 from .models import Hero
 
@@ -14,8 +15,9 @@ class HeroViewSet(viewsets.ModelViewSet):
 
 
 class BoardViewSet(viewsets.ModelViewSet):
+    # Use django built in authentication
     authentication_classes = [authentication.SessionAuthentication]
-    permission_classes = [permissions.DjangoModelPermissions] # OrAnonReadOnly
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, EditBoardOrReadOnly]
 
     queryset = Board.objects.all().order_by('id')
     serializer_class = BoardSerializer

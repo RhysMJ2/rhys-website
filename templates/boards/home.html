@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-    {% if perms.catalog.can_edit_board %}
+    {% if perms.boards.can_edit_board %}
     <div class="modal fade" id="editBoardModal" tabindex="-1" role="dialog" aria-labelledby="editBoardModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -19,17 +19,19 @@
             </div>
             <form id="board-form" action="" method="post">
             <div class="modal-body">
-                <label class="text-dark" id="board-id"></label>
-
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="board-name" class="col-form-label">Board Name:</label>
-                        <input type="text" class="form-control" id="board-name">
-                    </div>
-                    <div class="form-group">
-                        <label for="desc-text" class="col-form-label">Description:</label>
-                        <textarea class="form-control" id="desc-text"></textarea>
-                    </div>
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="board-id" class="col-form-label">Board ID:</label>
+                    <input type="text" class="form-control" id="board-id" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="board-name" class="col-form-label">Board Name:</label>
+                    <input type="text" class="form-control" id="board-name">
+                </div>
+                <div class="form-group">
+                    <label for="desc-text" class="col-form-label">Description:</label>
+                    <textarea class="form-control" id="desc-text"></textarea>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -107,6 +109,7 @@
         modal.find('#board-name').val(title);
         modal.find('#desc-text').val(desc);
     }
+    /* todo use show.bs.modal to make modal loading less jerky */
     $('#editBoardModal').on('shown.bs.modal', function (event) {
         document.getElementById("update-button").disabled = true;
         let button = $(event.relatedTarget); // Button that triggered the modal
@@ -115,14 +118,14 @@
 
         if (boardId == null) {
             document.getElementById("update-button").disabled = false;
-            modal.find('#board-id').text("Board ID: (New Board)");
+            modal.find('#board-id').val("(New Board)");
             modal.find('#editBoardModalTitle').text('Board ID: (New Board)');
             modal.find('#board-name').val('');
             modal.find('#desc-text').val('');
             document.getElementById("board-form").setAttribute("action", "{% host_url 'api:board:board-list' host 'www' %}");
         }
         else {
-            modal.find('#board-id').text("Board ID: " + boardId);
+            modal.find('#board-id').val(boardId);
             modal.find('#editBoardModalTitle').text('Loading...');
             modal.find('#board-name').val('Loading...');
             modal.find('#desc-text').val('Loading...');
