@@ -1,5 +1,5 @@
 {% extends 'boards/../base.html' %}
-
+{% load hosts %}
 {% block title %}Home{% endblock %}
 
 {% block breadcrumb %}
@@ -17,9 +17,10 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            <form id="board-form" action="" method="post">
             <div class="modal-body">
                 <label class="text-dark" id="board-id"></label>
-                <form>
+
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="board-name" class="col-form-label">Board Name:</label>
@@ -29,12 +30,12 @@
                         <label for="desc-text" class="col-form-label">Description:</label>
                         <textarea class="form-control" id="desc-text"></textarea>
                     </div>
-                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="update-button">Update Board</button>
+                <button type="submit" class="btn btn-primary" id="update-button">Update Board</button>
             </div>
+            </form>
         </div>
     </div>
     </div>
@@ -96,46 +97,51 @@
     </table>
 {% endblock %}
 
-{% if user.is_staff %}
 {% block javascript %}
-    <script>
-        function changeModal(data, modal) {
-            document.getElementById("update-button").disabled = false;
-            var title = data.name;
-            var desc = data.description;
-            modal.find('#editBoardModalTitle').text('Edit Board (' + title + ')');
-            modal.find('#board-name').val(title);
-            modal.find('#desc-text').val(desc);
-        }
-        $('#editBoardModal').on('show.bs.modal', function (event) {
+<script>
+    function changeModal(data, modal) {
+        document.getElementById("update-button").disabled = false;
+        let title = data.name;
+        let desc = data.description;
+        modal.find('#editBoardModalTitle').text('Edit Board (' + title + ')');
+        modal.find('#board-name').val(title);
+        modal.find('#desc-text').val(desc);
+    }
+    $('#editBoardModal').on('show.bs.modal', function (event) {
         document.getElementById("update-button").disabled = true;
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var boardId = button.data('boardid'); // Extract info from data-* attributes
-        var modal = $(this);
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        let button = $(event.relatedTarget); // Button that triggered the modal
+        let boardId = button.data('boardid'); // Extract info from data-* attributes
+        let modal = $(this);
+
         if (boardId == null) {
             document.getElementById("update-button").disabled = false;
             modal.find('#board-id').text("Board ID: (New Board)");
+            modal.find('#editBoardModalTitle').text('Board ID: (New Board)');
+            modal.find('#board-name').val('');
+            modal.find('#desc-text').val('');
+            document.getElementById("board-form").setAttribute("action", "{% host_url 'api:board:board-list' host 'www' %}");
         }
         else {
             modal.find('#board-id').text("Board ID: " + boardId);
             modal.find('#editBoardModalTitle').text('Loading...');
             modal.find('#board-name').val('Loading...');
             modal.find('#desc-text').val('Loading...');
-            $.ajax({
-                type: 'GET',
-                url: "//api.{{ request.META.HTTP_HOST }}/boards/board/" + boardId + "/",
-                dataType: "json",
-                success: function (data) {
+            document.getElementById("board-form").setAttribute("action", "{% host_url 'api:board:board-list' host 'www' %}" + boardId + "/");
+
+            let request = new XMLHttpRequest();
+
+            request.open("GET", "{% host_url 'api:board:board-list' host 'www' %}"+ boardId + "/", true)
+            request.onload = function () {
+                let data = JSON.parse(this.response);
+
+                if (request.status >= 200 && request.status < 400) {
                     changeModal(data, modal);
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    alert(xhr.status);
-                    alert(thrownError);
+                } else {
+                    showAlertMessage(request.status, "danger");
                 }
-            });
+            }
+            request.send()
         }
-    })</script>
+    })
+</script>
 {% endblock %}
-{% endif %}
