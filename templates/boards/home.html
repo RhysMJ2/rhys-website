@@ -134,7 +134,7 @@
             let request = new XMLHttpRequest();
 
             request.open("GET", "{% host_url 'api:board:board-list' host 'www' %}"+ boardId + "/", true)
-            request.onload = () => {
+            request.onload = function () {
                 let data = JSON.parse(this.response);
 
                 if (request.status >= 200 && request.status < 400) {
@@ -145,8 +145,8 @@
                     modal.modal('hide');
                 }
             }
-            request.onerror = () => {
-                let errorMessage = "Error: Request Failed, couldn't access content";
+            request.onerror = function () {
+                let errorMessage = "Error: Request failed";
                 showAlertMessage(errorMessage, "danger");
                 modal.modal('hide');
             }
