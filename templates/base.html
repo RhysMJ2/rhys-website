@@ -103,6 +103,7 @@
         let closeIcon = document.createElement("span");
 
         alert.setAttribute("class", "alert alert-"+ type +" alert-dismissible fade in show");
+
         alert.setAttribute("role", "alert");
 
         closeButton.setAttribute("type", "button");
@@ -121,6 +122,7 @@
 
         alertContainer.appendChild(alert);
 
+        // todo this resets timer and all alerts close at same tome
         setTimeout(function() {
             $(".alert").alert('close');
         }, 10000);
