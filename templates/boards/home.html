@@ -103,46 +103,43 @@
 <script>
     window.addEventListener( "load", function () {
         function sendData() {
-            const XHR = new XMLHttpRequest();
+            let request = new XMLHttpRequest();
             let modal = $("#editBoardModal");
+            document.getElementById("board-id").disabled = false
             // Bind the FormData object and the form element
-            const FORM_DATA = new FormData(form);
+            const FORM_DATA = new FormData(board_form);
+            modal.modal('hide');
 
             // Define what happens on successful data submission
-            XHR.onload = function() {
+            request.onload = function() {
                 let data = JSON.parse(this.response);
-                if (XHR.status >= 200 && XHR.status < 400) {
+                if (request.status >= 200 && request.status < 400) {
                     showAlertMessage("Board has been successfully Updated", "success");
-                    modal.modal('hide');
                 }
                 else {
-                    let errorMessage = "Error: " + XHR.status +" ("+XHR.statusText+")   " +data.detail;
+                    let errorMessage = "Error: " + request.status +" ("+request.statusText+")   " +data.detail;
                     showAlertMessage(errorMessage, "danger");
-                    modal.modal('hide');
                 }
             }
             // Define what happens in case of error
-            XHR.onerror = function( event ) {
+            request.onerror = function( event ) {
                 showAlertMessage("Oops! Something went wrong.", "danger");
-                modal.modal('hide');
             }
 
             // Set up our request
-            XHR.open("PUT", "{% host_url 'api:board:board-list' host 'www' %}" + FORM_DATA.get("id") + "/");
-            XHR.setRequestHeader('X-CSRFTOKEN', FORM_DATA.get('csrfmiddlewaretoken'));
+            request.open("PUT", "{% host_url 'api:board:board-list' host 'www' %}" + FORM_DATA.get("id") + "/");
+            request.setRequestHeader('X-CSRFTOKEN', FORM_DATA.get('csrfmiddlewaretoken'));
             FORM_DATA.delete('csrfmiddlewaretoken');
             // The data sent is what the user provided in the form
-            XHR.send(FORM_DATA);
+            request.send(FORM_DATA);
         }
 
         // Access the form element...
-        const form = document.getElementById("board-form");
+        const board_form = document.getElementById("board-form");
 
         // ...and take over its submit event.
-        form.addEventListener( "submit", function ( event ) {
-            document.getElementById("board-id").disabled = false
+        board_form.addEventListener( "submit", function ( event ) {
             event.preventDefault();
-
             sendData();
         } );
     } );
@@ -156,11 +153,12 @@
         modal.find('#desc-text').val(desc);
     }
     /* todo use show.bs.modal to make modal loading less jerky */
-    $('#editBoardModal').on('shown.bs.modal', function (event) {
+    $('#editBoardModal').on('show.bs.modal', function (event) {
         document.getElementById("update-button").disabled = true;
         let button = $(event.relatedTarget); // Button that triggered the modal
         let boardId = button.data('boardid'); // Extract info from data-* attributes
         let modal = $(this);
+
 
         if (boardId == null) {
             document.getElementById("update-button").disabled = false;
@@ -175,6 +173,12 @@
             modal.find('#board-name').val('Loading...');
             modal.find('#desc-text').val('Loading...');
 
+        }})
+    $('#editBoardModal').on('shown.bs.modal', function (event) {
+        let button = $(event.relatedTarget); // Button that triggered the modal
+        let boardId = button.data('boardid'); // Extract info from data-* attributes
+        let modal = $(this);
+        if (boardId != null) {
             let request = new XMLHttpRequest();
 
             request.open("GET", "{% host_url 'api:board:board-list' host 'www' %}"+ boardId + "/", true)
