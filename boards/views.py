@@ -24,6 +24,10 @@ class BoardListView(ListView):
     template_name = 'boards/home.html'
 
 
+def home(request):
+    return render(request, 'boards/index.html')
+
+
 def login(request):
     direct = request.GET.get('next', '')
     domain = PARENT_HOST

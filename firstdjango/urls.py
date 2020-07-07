@@ -26,7 +26,9 @@ sitemaps = {
 }
 
 urlpatterns = [
-    path('', views.BoardListView.as_view(), name='home'),
+    # todo improve filenames and names
+    path('', views.home, name='home'),
+    path('boards/', views.BoardListView.as_view(), name='boards'),
     path('admin/', admin.site.urls, name='admin'), # For the admin dashboard
     path('boards/<int:pk>/', views.TopicListView.as_view(), name='board_topics'),
     path('boards/<int:pk>/new/', views.new_topic, name='new_topic'),
