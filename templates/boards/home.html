@@ -105,9 +105,13 @@
         function sendData() {
             let request = new XMLHttpRequest();
             let modal = $("#editBoardModal");
+            var requestType = 'PUT';
+
             document.getElementById("board-id").disabled = false
-            // Bind the FormData object and the form element
+
             const FORM_DATA = new FormData(board_form);
+            var urlLocation = "{% host_url 'api:board:board-list' host 'www' %}"  + FORM_DATA.get("id") + "/"
+
             modal.modal('hide');
 
             // Define what happens on successful data submission
@@ -127,7 +131,12 @@
             }
 
             // Set up our request
-            request.open("PUT", "{% host_url 'api:board:board-list' host 'www' %}" + FORM_DATA.get("id") + "/");
+            if (FORM_DATA.get('id') === '(New Board)') {
+                requestType = 'POST';
+                urlLocation = "{% host_url 'api:board:board-list' host 'www' %}";
+                FORM_DATA.delete('id');
+            }
+            request.open(requestType, urlLocation);
             request.setRequestHeader('X-CSRFTOKEN', FORM_DATA.get('csrfmiddlewaretoken'));
             FORM_DATA.delete('csrfmiddlewaretoken');
             // The data sent is what the user provided in the form

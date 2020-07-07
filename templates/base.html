@@ -122,13 +122,11 @@
 
         alertContainer.appendChild(alert);
 
-        // todo this resets timer and all alerts close at same tome
+        // todo this resets timer and all alerts close at same time
         setTimeout(function() {
             $(".alert").alert('close');
         }, 10000);
-
     }
-
 </script>
 {% block javascript %}{% endblock %}
 
