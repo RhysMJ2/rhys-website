@@ -81,6 +81,22 @@
 
     {% block content %}
     {% endblock %}
+    <div class="modal" id="yesOrNoModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="yesOrNoModal" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="yesOrNoModalLabel"></h5>
+                </div>
+                <div class="modal-body" id="yesOrNoModalBody">
+                </div>
+                <div class="modal-footer justify-content-center" id="yesOrNoModalButtons">
+                    <button type="button" class="btn btn-secondary btn-lg pb-2" id="yesOrNoModalNo">No</button>
+                    <button type="button" class="btn btn-primary btn-lg pb-2" id="yesOrNoModalYes">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 </main>
 <footer class="footer mt-auto py-3">
@@ -89,47 +105,12 @@
 </div>
 </footer>
 {% endblock body %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src={% static 'js/jquery-3.4.1.min.js' %}></script>
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
 <script src="https://getbootstrap.com/docs/4.1/assets/js/docs.min.js"></script>
-
-<script>
-    function showAlertMessage(message, type="info") {
-        let alertContainer = document.getElementById("custom_message_alert");
-        let alert = document.createElement("div");
-        let closeButton = document.createElement("button");
-        let closeIcon = document.createElement("span");
-
-        alert.setAttribute("class", "alert alert-"+ type +" alert-dismissible fade in show");
-
-        alert.setAttribute("role", "alert");
-
-        closeButton.setAttribute("type", "button");
-        closeButton.setAttribute("class", "close");
-        closeButton.setAttribute("data-dismiss", "alert");
-        closeButton.setAttribute("aria-label", "Close");
-
-        closeIcon.setAttribute("aria-hidden", "true");
-        closeIcon.appendChild(document.createTextNode("×"));
-
-        message = document.createTextNode(message);
-
-        alert.appendChild(message);
-        alert.appendChild(closeButton);
-        closeButton.appendChild(closeIcon)
-
-        alertContainer.appendChild(alert);
-
-        // todo this resets timer and all alerts close at same time
-        setTimeout(function() {
-            $(".alert").alert('close');
-        }, 10000);
-    }
-</script>
+<script src="{% static 'js/customjs.js' %}"></script>
 {% block javascript %}{% endblock %}
-
-
 </body>
 </html>

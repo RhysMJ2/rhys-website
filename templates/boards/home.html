@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-    {% if perms.boards.can_edit_board %}
+    {% if perms.boards.can_edit_board or perms.boards.can_add_board %}
     <div class="modal fade" id="editBoardModal" tabindex="-1" role="dialog" aria-labelledby="editBoardModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -19,6 +19,7 @@
             </div>
             <form id="board-form">
             <div class="modal-body">
+                <div id="editBoardMessages"></div>
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="board-id" class="col-form-label">Board ID:</label>
@@ -34,6 +35,7 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="delete-board-button">Delete</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary" id="update-button">Update Board</button>
             </div>
@@ -100,58 +102,76 @@
 {% endblock %}
 
 {% block javascript %}
+{% if perms.boards.can_edit_board or perms.boards.can_add_board %}
 <script>
-    window.addEventListener( "load", function () {
-        function sendData() {
-            let request = new XMLHttpRequest();
-            let modal = $("#editBoardModal");
-            var requestType = 'PUT';
+    function sendData(erase=false) {
+        let request = new XMLHttpRequest();
+        let modal = $("#editBoardModal");
+        var requestType = 'PUT';
 
-            document.getElementById("board-id").disabled = false
+        document.getElementById("board-id").disabled = false
 
-            const FORM_DATA = new FormData(board_form);
-            var urlLocation = "{% host_url 'api:board:board-list' host 'www' %}"  + FORM_DATA.get("id") + "/"
+        const FORM_DATA = new FormData(board_form);
+        var urlLocation = "{% host_url 'api:board:board-list' host 'www' %}"  + FORM_DATA.get("id") + "/"
 
-            modal.modal('hide');
+        modal.modal('hide');
 
-            // Define what happens on successful data submission
-            request.onload = function() {
-                let data = JSON.parse(this.response);
-                if (request.status >= 200 && request.status < 400) {
-                    showAlertMessage("Board has been successfully Updated", "success");
-                }
-                else {
-                    let errorMessage = "Error: " + request.status +" ("+request.statusText+")   " +data.detail;
-                    showAlertMessage(errorMessage, "danger");
-                }
+        // Define what happens on successful data submission
+        request.onload = function() {
+            let data = JSON.parse(this.response);
+            if (request.status >= 200 && request.status < 400) {
+                showAlertMessage("Board has been successfully Updated", "success");
             }
-            // Define what happens in case of error
-            request.onerror = function( event ) {
-                showAlertMessage("Oops! Something went wrong.", "danger");
+            else {
+                let errorMessage = "Error: " + request.status +" ("+request.statusText+")   " +data.detail;
+                showAlertMessage(errorMessage, "danger");
             }
-
-            // Set up our request
-            if (FORM_DATA.get('id') === '(New Board)') {
-                requestType = 'POST';
-                urlLocation = "{% host_url 'api:board:board-list' host 'www' %}";
-                FORM_DATA.delete('id');
-            }
-            request.open(requestType, urlLocation);
-            request.setRequestHeader('X-CSRFTOKEN', FORM_DATA.get('csrfmiddlewaretoken'));
-            FORM_DATA.delete('csrfmiddlewaretoken');
-            // The data sent is what the user provided in the form
-            request.send(FORM_DATA);
+        }
+        // Define what happens in case of error
+        request.onerror = function( event ) {
+            showAlertMessage("Oops! Something went wrong.", "danger");
         }
 
-        // Access the form element...
-        const board_form = document.getElementById("board-form");
+        // Set up our request
+        if (erase) {
+            requestType = "DELETE";
+        }
+        else if (FORM_DATA.get('id') === '(New Board)') {
+            requestType = 'POST';
+            urlLocation = "{% host_url 'api:board:board-list' host 'www' %}";
+            FORM_DATA.delete('id');
+        }
+        request.open(requestType, urlLocation);
+        request.setRequestHeader('X-CSRFTOKEN', FORM_DATA.get('csrfmiddlewaretoken'));
+        FORM_DATA.delete('csrfmiddlewaretoken');
+        // The data sent is what the user provided in the form
+        request.send(FORM_DATA);
+    }
 
-        // ...and take over its submit event.
-        board_form.addEventListener( "submit", function ( event ) {
-            event.preventDefault();
-            sendData();
-        } );
+    // Access the form element...
+    const board_form = document.getElementById("board-form");
+
+    // ...and take over its submit event.
+    board_form.addEventListener( "submit", function ( event ) {
+        event.preventDefault();
+        sendData();
     } );
+
+    // Listen for when delete button is clicked
+    document.getElementById("delete-board-button").addEventListener("click", function (event) {
+        var data = Object();
+        data.title = "Confirm Deletion";
+        data.message = "Are you sure you want to delete this record?"
+        data.no = function () {
+            showAlertMessage("This modal has NOT been deleted!", "info", "editBoardMessages")
+        }
+        data.yes = function () {
+            sendData(true);
+            $('#editBoardModal').modal("hide");
+        }
+        setupYesOrNoModal(data);
+    });
+
     function changeModal(data, modal) {
         document.getElementById("board-id").disabled = true
         document.getElementById("update-button").disabled = false;
@@ -211,4 +231,5 @@
         }
     })
 </script>
+{% endif %}
 {% endblock %}

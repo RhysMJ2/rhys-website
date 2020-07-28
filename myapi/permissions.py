@@ -9,7 +9,6 @@ class EditBoardOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             hasPermission = True
 
-        # todo return true for post if has permission
         elif request.method == "PUT":
             hasPermission = request.user.has_perm("boards.can_edit_board")
 
