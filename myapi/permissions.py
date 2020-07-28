@@ -15,4 +15,7 @@ class EditBoardOrReadOnly(permissions.BasePermission):
         elif request.method == "POST":
             hasPermission = request.user.has_perm("boards.can_add_board")
 
+        elif request.method == "DELETE":
+            hasPermission = request.user.has_perm("boards.can_delete_board")
+
         return hasPermission
