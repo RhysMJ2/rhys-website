@@ -163,7 +163,7 @@
         event.preventDefault();
         sendData();
     } );
-
+    {% if perms.boards.can_delete_board %}
     // Listen for when delete button is clicked
     document.getElementById("delete-board-button").addEventListener("click", function (event) {
         var data = Object();
@@ -178,7 +178,7 @@
         }
         setupYesOrNoModal(data);
     });
-
+    {% endif %}
     function changeModal(data, modal) {
         document.getElementById("board-id").disabled = true
         document.getElementById("update-button").disabled = false;
