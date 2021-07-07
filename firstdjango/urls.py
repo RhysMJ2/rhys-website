@@ -34,6 +34,7 @@ urlpatterns = [
     path('boards/<int:pk>/topics/<int:topic_pk>/reply/', views.reply_topic, name='reply_topic'),
     path('boards/<pk>/topics/<topic_pk>/posts/<post_pk>/edit/',
          views.PostUpdateView.as_view(), name='edit_post'),
+    path('api/', include(('myapi.urls', 'api'), namespace='api')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
 ]

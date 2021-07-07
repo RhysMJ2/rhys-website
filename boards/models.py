@@ -14,6 +14,9 @@ class Board(models.Model):
     name = models.CharField(max_length=30, unique=True)
     description = models.CharField(max_length=100)
 
+    class Meta:
+        permissions = (("can_edit_board", "Edit Board Details"), ("can_archive_board", "Can Mark as Archived"),)
+
     def __str__(self):
         return self.name
 

@@ -1,5 +1,5 @@
 {% extends 'boards/../base.html' %}
-
+{% load hosts %}
 {% block title %}Home{% endblock %}
 
 {% block breadcrumb %}
@@ -7,6 +7,45 @@
 {% endblock %}
 
 {% block content %}
+    {% if perms.boards.can_edit_board or perms.boards.can_add_board %}
+    <div class="modal fade" id="editBoardModal" tabindex="-1" role="dialog" aria-labelledby="editBoardModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editBoardModalTitle">New Board</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="board-form">
+            <div class="modal-body">
+                <div id="editBoardMessages"></div>
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="board-id" class="col-form-label">Board ID:</label>
+                    <input type="text" class="form-control" id="board-id" name="id" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="board-name" class="col-form-label">Board Name:</label>
+                    <input type="text" class="form-control" id="board-name" name="name">
+                </div>
+                <div class="form-group">
+                    <label for="desc-text" class="col-form-label">Description:</label>
+                    <textarea class="form-control" id="desc-text" name="description"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                {% if perms.boards.can_delete_board %}
+                <button type="button" class="btn btn-danger" id="delete-board-button">Delete</button>
+                {% endif %}
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="update-button">Update Board</button>
+            </div>
+            </form>
+        </div>
+    </div>
+    </div>
+    {% endif %}
     <table class="table">
         <thead class="thead-inverse">
         <tr>
@@ -14,6 +53,11 @@
             <th>Posts</th>
             <th>Topics</th>
             <th>Last Post</th>
+            <th>
+            {% if perms.boards.can_add_board %}
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editBoardModal">New</button>
+            {% endif %}
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -44,8 +88,155 @@
                         {% endif %}
                     {% endwith %}
                 </td>
+                {% if perms.boards.can_edit_board %}
+                <td class="align-middle">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editBoardModal" data-boardid="{{ board.id }}">Edit</button>
+                </td>
+                {% elif perms.boards.can_archive_board %}
+                <td class="align-middle">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="">Archive</button>
+                </td>
+                {% endif %}
             </tr>
         {% endfor %}
         </tbody>
     </table>
+{% endblock %}
+
+{% block javascript %}
+{% if perms.boards.can_edit_board or perms.boards.can_add_board %}
+<script>
+    function sendData(erase=false) {
+        let request = new XMLHttpRequest();
+        let modal = $("#editBoardModal");
+        var requestType = 'PUT';
+
+        document.getElementById("board-id").disabled = false
+
+        const FORM_DATA = new FormData(board_form);
+        var urlLocation = "{% host_url 'api:board:board-list' host 'www' %}"  + FORM_DATA.get("id") + "/"
+
+        modal.modal('hide');
+
+        // Define what happens on successful data submission
+        request.onload = function() {
+            try {
+                let data = JSON.parse(this.response);
+            }
+            finally {
+                showAlertMessage("Oops! Something went wrong.", "danger");
+            }
+            if (request.status >= 200 && request.status < 400) {
+                showAlertMessage("Board has been successfully Updated", "success");
+            }
+            else {
+                let errorMessage = "Error: " + request.status +" ("+request.statusText+")   " +data.detail;
+                showAlertMessage(errorMessage, "danger");
+            }
+        }
+        // Define what happens in case of error
+        request.onerror = function( event ) {
+            showAlertMessage("Oops! Something went wrong.", "danger");
+        }
+
+        // Set up our request
+        if (erase) {
+            requestType = "DELETE";
+        }
+        else if (FORM_DATA.get('id') === '(New Board)') {
+            requestType = 'POST';
+            urlLocation = "{% host_url 'api:board:board-list' host 'www' %}";
+            FORM_DATA.delete('id');
+        }
+        request.open(requestType, urlLocation);
+        request.setRequestHeader('X-CSRFTOKEN', FORM_DATA.get('csrfmiddlewaretoken'));
+        FORM_DATA.delete('csrfmiddlewaretoken');
+        // The data sent is what the user provided in the form
+        request.send(FORM_DATA);
+    }
+
+    // Access the form element...
+    const board_form = document.getElementById("board-form");
+
+    // ...and take over its submit event.
+    board_form.addEventListener( "submit", function ( event ) {
+        event.preventDefault();
+        sendData();
+    } );
+
+    // Listen for when delete button is clicked
+    document.getElementById("delete-board-button").addEventListener("click", function (event) {
+        var data = Object();
+        data.title = "Confirm Deletion";
+        data.message = "Are you sure you want to delete this record?"
+        data.no = function () {
+            showAlertMessage("This modal has NOT been deleted!", "info", "editBoardMessages")
+        }
+        data.yes = function () {
+            sendData(true);
+            $('#editBoardModal').modal("hide");
+        }
+        setupYesOrNoModal(data);
+    });
+
+    function changeModal(data, modal) {
+        document.getElementById("board-id").disabled = true
+        document.getElementById("update-button").disabled = false;
+        let title = data.name;
+        let desc = data.description;
+        modal.find('#editBoardModalTitle').text('Edit Board (' + title + ')');
+        modal.find('#board-name').val(title);
+        modal.find('#desc-text').val(desc);
+    }
+    /* todo use show.bs.modal to make modal loading less jerky */
+    $('#editBoardModal').on('show.bs.modal', function (event) {
+        document.getElementById("update-button").disabled = true;
+        let button = $(event.relatedTarget); // Button that triggered the modal
+        let boardId = button.data('boardid'); // Extract info from data-* attributes
+        let modal = $(this);
+
+
+        if (boardId == null) {
+            document.getElementById("update-button").disabled = false;
+            modal.find('#board-id').val("(New Board)");
+            modal.find('#editBoardModalTitle').text('Board ID: (New Board)');
+            modal.find('#board-name').val('');
+            modal.find('#desc-text').val('');
+        }
+        else {
+            modal.find('#board-id').val(boardId);
+            modal.find('#editBoardModalTitle').text('Loading...');
+            modal.find('#board-name').val('Loading...');
+            modal.find('#desc-text').val('Loading...');
+
+        }})
+    $('#editBoardModal').on('shown.bs.modal', function (event) {
+        let button = $(event.relatedTarget); // Button that triggered the modal
+        let boardId = button.data('boardid'); // Extract info from data-* attributes
+        let modal = $(this);
+        if (boardId != null) {
+            let request = new XMLHttpRequest();
+
+            request.open("GET", "{% host_url 'api:board:board-list' host 'www' %}"+ boardId + "/", true)
+            request.onload = function () {
+                let data = JSON.parse(this.response);
+
+                if (request.status >= 200 && request.status < 400) {
+                    changeModal(data, modal);
+                } else {
+                    let errorMessage = "Error: " + request.status +" ("+request.statusText+")";
+                    showAlertMessage(errorMessage, "danger");
+                    modal.modal('hide');
+                }
+            }
+            request.onerror = function () {
+                let errorMessage = "Error: Request failed";
+                showAlertMessage(errorMessage, "danger");
+                modal.modal('hide');
+            }
+            request.send()
+        }
+    })
+</script>
+{% endif %}
 {% endblock %}

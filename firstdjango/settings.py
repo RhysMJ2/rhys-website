@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.contrib.sitemaps',
 
+    'corsheaders',
     'boards.templatetags.gravatar',
     'django_hosts',
     'widget_tweaks',
@@ -56,6 +57,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django_hosts.middleware.HostsRequestMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -67,11 +70,13 @@ MIDDLEWARE = [
     'django_hosts.middleware.HostsResponseMiddleware',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 ROOT_URLCONF = 'firstdjango.urls'
 ROOT_HOSTCONF = 'firstdjango.hosts'
 PARENT_HOST = 'server.home' if DEBUG else 'isfrom.cymru'
 SESSION_COOKIE_DOMAIN = '.server.home' if DEBUG else '.isfrom.cymru'
-DOMAIN_NAME = "isfrom.cymru"
+DOMAIN_NAME = 'server.home' if DEBUG else 'isfrom.cymru'
 DEFAULT_HOST = 'www'
 
 TEMPLATES = [
@@ -96,17 +101,8 @@ WSGI_APPLICATION = 'firstdjango.wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAdminUser',
-    ],
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle'
-    ],
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '20/day',
-        'user': '150/day'
-    }
-}
+        'rest_framework.permissions.IsAuthenticated',
+    ]}
 
 # Database
 if DEBUG:
