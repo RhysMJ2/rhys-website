@@ -4,6 +4,7 @@ from django.db import models
 # Create your models here.
 from django.dispatch import receiver
 
+
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name="profiles", on_delete=models.CASCADE)
     bio = models.CharField(max_length=350)

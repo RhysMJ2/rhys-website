@@ -3,7 +3,7 @@
 
 {% block title %}Edit Profile{% endblock %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% host_url 'user_profile' username=user.username host 'account' %}">{{ user.username }}</a></li>
+    <li class="breadcrumb-item"><a href="{% host_url 'user_profile' username=user.username host 'www' %}">{{ user.username }}</a></li>
     <li class="breadcrumb-item active">Edit Profile</li>
 {% endblock %}
 
@@ -17,7 +17,7 @@
                 {% include 'includes/form.html' %}
                 <div class="form-group">
                     <label for="change_pass">Password:</label>
-                    <a class="btn btn-info ml-2" href="{% host_url 'password_change' host 'account' %}">Change Password</a>
+                    <a class="btn btn-info ml-2" href="{% host_url 'password_change' host 'www' %}">Change Password</a>
                 </div>
                 <button type="submit" class="btn btn-success">Save changes</button>
             </form>

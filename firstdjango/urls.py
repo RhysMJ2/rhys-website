@@ -37,6 +37,8 @@ urlpatterns = [
     path('api/', include(('myapi.urls', 'api'), namespace='api')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
+
+    path("account/", include(('firstdjango.accounts_urls', 'accounts_url'), namespace="accounts"))
 ]
 
 handler404 = 'boards.views.error_404'

@@ -16,7 +16,7 @@
                     {% if user.is_valid %}
                         <h3 class="card-title">Account activated for @{{ user.username }}</h3>
                         <p>Thank you for activating your account, you have been automatically logged in.</p>
-                        <a href="{% host_url 'user_profile' host 'account' %}" class="btn btn-secondary btn-block">Go to profile</a>
+                        <a href="{% host_url 'user_profile' host 'www' %}" class="btn btn-secondary btn-block">Go to profile</a>
                     {% else %}
                         <h3 class="card-title">Invalid link</h3>
                         <div class="alert alert-danger" role="alert">
